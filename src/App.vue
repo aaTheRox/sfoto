@@ -1,7 +1,8 @@
 <template>
 
   <div class="container" id="app">
-<app-header></app-header>    
+    <app-header></app-header>    
+    
     <router-view/>
 
     <app-footer></app-footer>

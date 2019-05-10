@@ -1,6 +1,7 @@
 <template>
     <footer>
-      2019 &copy;
+      <hr />
+      ShurFoto - 2019 &copy;
     </footer>
 </template>
 
