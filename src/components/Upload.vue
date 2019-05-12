@@ -3,6 +3,7 @@
     <div class="upload-box" @dragover.prevent @drop="handleOnDrop">
       <h1>
         <i @click="$refs.upload.click()" class="fas fa-cloud-upload-alt"></i>
+        
         <input ref="upload" @change="handleFileName" class="file-input is-hidden" type="file">
       </h1>
       <span>{{ file_name }}</span>
@@ -11,6 +12,15 @@
         <br>
         <button @click="handleUpload" class="button is-success is-large">Subir</button>
         <p>{{ message }}</p>
+        
+      </div>
+      <div v-if="uploadPercentage > 0" class="field">
+          <span v-if="uploadPercentage !== 100">Subiendo imagen... </span>
+          <progress class="progress is-small is-primary"  max="100" :value.prop="uploadPercentage">{{uploadPercentage}} %</progress>
+      </div>
+
+      <div class="field">
+          <img :src="RESULT_IMG" alt="">
       </div>
     </div>
   </div>
@@ -26,7 +36,9 @@ export default {
     return {
       file_name: "Elige un archivo...",
       file: null,
-      message: ""
+      message: "",
+      uploadPercentage: 0,
+      RESULT_IMG: ''
     };
   },
 
@@ -43,21 +55,25 @@ export default {
       //this.handleUpload();
     },
     handleUpload() {
+    this.uploadPercentage = 0;
       let formData = new FormData();
-
+      formData.append("upload", this.file);
       parent = this;
+
       if (parent.file !== null) {
         axios
-          .post("/upload.php", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data"
-            }
+          .post(`http://localhost/api/upload.php`, formData, {
+            onUploadProgress: function(progressEvent) {
+              this.uploadPercentage = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
+            }.bind(this)
           })
-          .then(function() {
-            parent.message = "La foto se ha subido correctamente.";
+          .then(res => {
+            console.log(res);
+            this.message = res.data.RESPONSE;
+            this.RESULT_IMG = res.data.UPLOADED_PATH;
           })
-          .catch(function() {
-            parent.message = "Algo ha fallado.";
+          .catch(e => {
+            console.log(e);
           });
       }
     }
@@ -71,6 +87,7 @@ h1 {
   color: #275f70;
 }
 .upload-box {
+  margin-top: 50px;
   padding: 20px;
   border: 3px dashed #cef3ff;
   width: 100%;

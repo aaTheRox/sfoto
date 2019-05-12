@@ -1,8 +1,6 @@
 <template>
     <div>
-    <h2 class="title">index page</h2>
-    <upload></upload>
-
+      <upload></upload>
     </div>
 </template>
 

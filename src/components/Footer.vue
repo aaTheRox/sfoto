@@ -1,7 +1,7 @@
 <template>
     <footer>
       <hr />
-      ShurFoto - 2019 &copy;
+      ShurFoto 2019 - Hecho por nysam
     </footer>
 </template>
 
