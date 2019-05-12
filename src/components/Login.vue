@@ -1,0 +1,32 @@
+<template>
+    <div class="columns is-centered">
+      <div class="column is-4">
+
+      <h1 class="title">Iniciar sesión</h1>
+      <form>
+        <div class="field">
+          <label for="">Correo electrónico</label>
+          <input type="text" class="input">
+        </div>
+
+        <div class="field">
+          <label for="">Contraseña</label>
+          <input type="password" class="input">
+        </div>
+
+        <div class="field">
+          <button class="button is-light">Iniciar sesión</button>
+          <p>No tienes cuenta? <a href="#">Registrarse</a></p>
+        </div>
+
+      </form>
+      </div>
+    </div>
+</template>
+
+<script>
+
+export default {
+}
+</script>
+
