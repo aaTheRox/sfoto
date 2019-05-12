@@ -5,13 +5,13 @@
       <h1 class="title">Iniciar sesión</h1>
       <form>
         <div class="field">
-          <label for="">Correo electrónico</label>
-          <input type="text" class="input">
+          <label for="Email">Correo electrónico</label>
+          <input autocomplete="off" autofocusa id="Email" v-model="email" type="text" class="input">
         </div>
 
         <div class="field">
-          <label for="">Contraseña</label>
-          <input type="password" class="input">
+          <label for="Password">Contraseña</label>
+          <input id="Password" v-model="password" type="password" class="input">
         </div>
 
         <div class="field">
@@ -27,6 +27,12 @@
 <script>
 
 export default {
+  data() {
+    return {
+      email: '',
+      password: ''
+    }
+  }
 }
 </script>
 

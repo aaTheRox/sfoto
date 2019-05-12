@@ -14,7 +14,7 @@
         <p>{{ message }}</p>
         
       </div>
-      <div v-if="uploadPercentage > 0" class="field">
+      <div v-if="isUploading" class="field">
           <span v-if="uploadPercentage !== 100">Subiendo imagen... </span>
           <progress class="progress is-small is-primary"  max="100" :value.prop="uploadPercentage">{{uploadPercentage}} %</progress>
       </div>
@@ -38,6 +38,7 @@ export default {
       file: null,
       message: "",
       uploadPercentage: 0,
+      isUploading: false,
       RESULT_IMG: ''
     };
   },
@@ -61,6 +62,7 @@ export default {
       parent = this;
 
       if (parent.file !== null) {
+        this.isUploading = true;
         axios
           .post(`http://localhost/api/upload.php`, formData, {
             onUploadProgress: function(progressEvent) {
@@ -71,9 +73,12 @@ export default {
             console.log(res);
             this.message = res.data.RESPONSE;
             this.RESULT_IMG = res.data.UPLOADED_PATH;
+            this.isUploading = false;
+
           })
           .catch(e => {
             console.log(e);
+            this.isUploading = false;
           });
       }
     }
