@@ -1,4 +1,7 @@
 <template>
+<div>
+<p>{{ message }}</p>
+<div v-if="isUploading" :style="{width: uploadPercentage + '%'}" class="loading"></div>
   <div v-if="!hasUploaded" class="columns multiline">
     <div class="column is-12 upload-box" @dragover.prevent @drop="handleOnDrop">
       <h1>
@@ -14,18 +17,23 @@
       </div>
       <div v-if="isUploading" class="field">
         <span v-if="uploadPercentage !== 100">Subiendo imagen...</span>
-        <progress
+        <!--<progress
           class="progress is-small is-primary"
           max="100"
           :value.prop="uploadPercentage"
-        >{{uploadPercentage}} %</progress>
+        >{{uploadPercentage}} %</progress>-->
       </div>
     </div>
   </div>
 
   <div v-else>
-    <div class="columns">
-      <div class="column is-12">
+    
+    <div v-if="!error" class="columns">
+
+      <div v-if="error" class="column is-12">
+        <p>{{ message }}</p>
+      </div>
+      <div v-else class="column is-12">
         <div class="field has-text-centered">
           <p>{{ message }}</p>
           <a target="_blank" :href="RESULT_IMG">
@@ -50,6 +58,9 @@
       </div>
     </div>
   </div>
+
+</div>
+  
 </template>
 
 <script>
@@ -78,8 +89,9 @@ export default {
     handleOnDrop(e) {
       e.stopPropagation();
       e.preventDefault();
-      this.file = e.dataTransfer.files;
+      this.file = e.dataTransfer.files[0]
       this.file_name = e.dataTransfer.files[0].name;
+
       //this.handleUpload();
     },
     handleUpload() {
@@ -100,11 +112,18 @@ export default {
             }.bind(this)
           })
           .then(res => {
-            console.log(res);
+            console.log(res.data);
+           if(res.data.error) {
+            this.error = true;
+             this.message = res.data.RESPONSE;
+            } else {
+            this.error = false;
+              console.log(res);
             this.message = res.data.RESPONSE;
             this.RESULT_IMG = res.data.UPLOADED_PATH;
             this.isUploading = false;
             this.hasUploaded = true;
+            }
           })
           .catch(e => {
             console.log(e);
@@ -123,7 +142,11 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="less">
+//@error: #9a2d2d;
+//@success: #049885;
+//@grey: #292929;
+
 h1 {
   font-size: 4em;
   color: #275f70;
@@ -148,5 +171,17 @@ h3.custom-title {
 
 .mtop-15 {
   margin-top: 15px;
+}
+.loading {
+  width: 0;
+  height: 4px;
+  background: #049885;
+  position: fixed;
+  top: 0;
+  clear: both;
+  left: 0;
+  z-index: 100;
+  transition-duration: .3s;
+  transition-delay: .3s;
 }
 </style>
