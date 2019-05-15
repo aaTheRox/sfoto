@@ -42,7 +42,8 @@
         <div class="field">
           <h3 class="custom-title">
             Puedes copiar el siguiente código para insertar tu imagen en un foro</h3>
-          <input type="text" class="input has-text-centered" :value="'[IMG]' +RESULT_IMG+ '[/IMG]'">
+          <input id="link" @click="copyLink" type="text" class="input has-text-centered" :value="'[IMG]' +RESULT_IMG+ '[/IMG]'">
+       &nbsp;<a href="#" @click.stop.prevent="copyLink"><i class="far fa-copy"></i></a>
         </div>
 
         <div class="field">
@@ -77,6 +78,11 @@ export default {
   },
 
   methods: {
+    copyLink(e) {
+      document.getElementById('link').select()
+      document.execCommand('copy');
+      this.message = 'Se ha copiado correctamente.'
+    },
     handleFileName(e) {
       this.file = this.$refs.upload.files[0];
       this.file_name = this.$refs.upload.files[0].name;
@@ -144,8 +150,8 @@ success: #049885;
 grey: #292929;
 */
 h1 {
-  font-size: 4em;
-  color: #275f70;
+  font-size: 7em;
+  color: #4a4a4a
 }
 .upload-box {
   margin-top: 50px;
