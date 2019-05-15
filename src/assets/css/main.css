@@ -1,0 +1,14 @@
+.notification {
+  background: #23d160;
+  min-width: 350px;
+  position: fixed;
+  z-index: 9999;
+  padding: 12px;
+  top: 55px;
+  right: 10px;
+  color: #fff;
+  text-align: center;
+}
+.notification.error {
+  background-color: #9a2d2d;
+}

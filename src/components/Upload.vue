@@ -1,22 +1,23 @@
 <template>
 <div>
-<p>{{ message }}</p>
+  <div v-if="message.length > 0" class="notification">
+    <i class="fas fa-check"></i>&nbsp; {{ message }}
+  </div>
 <div v-if="isUploading" :style="{width: uploadPercentage + '%'}" class="loading"></div>
   <div v-if="!hasUploaded" class="columns multiline">
     <div class="column is-12 upload-box" @dragover.prevent @drop="handleOnDrop">
       <h1>
         <i @click="$refs.upload.click()" class="fas fa-cloud-upload-alt"></i>
-
-        <input ref="upload" @change="handleFileName" class="file-input is-hidden" type="file">
       </h1>
+      <input ref="upload" @change="handleFileName" class="file-input is-hidden" type="file">
       <span>{{ file_name }}</span>
 
       <div class="field has-text-centered">
         <br>
-        <button @click="handleUpload" class="button is-success is-large">Subir</button>
+        <button :disabled="file_name==''" @click="handleUpload" class="button is-success is-large"><i class="fas fa-upload"></i>&nbsp; Subir archivos</button>
       </div>
       <div v-if="isUploading" class="field">
-        <span v-if="uploadPercentage !== 100">Subiendo imagen...</span>
+        <span v-if="uploadPercentage > 0">Subiendo imagen...</span>
         <!--<progress
           class="progress is-small is-primary"
           max="100"
@@ -27,15 +28,9 @@
   </div>
 
   <div v-else>
-    
     <div v-if="!error" class="columns">
-
-      <div v-if="error" class="column is-12">
-        <p>{{ message }}</p>
-      </div>
-      <div v-else class="column is-12">
+      <div class="column is-12">
         <div class="field has-text-centered">
-          <p>{{ message }}</p>
           <a target="_blank" :href="RESULT_IMG">
             <img class="preview" :src="RESULT_IMG" alt>
           </a>
@@ -71,7 +66,7 @@ export default {
 
   data() {
     return {
-      file_name: "Elige un archivo...",
+      file_name: '',
       file: null,
       message: "",
       uploadPercentage: 0,
@@ -91,8 +86,6 @@ export default {
       e.preventDefault();
       this.file = e.dataTransfer.files[0]
       this.file_name = e.dataTransfer.files[0].name;
-
-      //this.handleUpload();
     },
     handleUpload() {
       this.hasUploaded = false;
@@ -116,6 +109,7 @@ export default {
            if(res.data.error) {
             this.error = true;
              this.message = res.data.RESPONSE;
+             this.uploadPercentage = 0;
             } else {
             this.error = false;
               console.log(res);
@@ -123,6 +117,7 @@ export default {
             this.RESULT_IMG = res.data.UPLOADED_PATH;
             this.isUploading = false;
             this.hasUploaded = true;
+            this.uploadPercentage = 0;
             }
           })
           .catch(e => {
@@ -142,11 +137,12 @@ export default {
 };
 </script>
 
-<style scoped lang="less">
-//@error: #9a2d2d;
-//@success: #049885;
-//@grey: #292929;
 
+<style>
+/*error: #9a2d2d;
+success: #049885;
+grey: #292929;
+*/
 h1 {
   font-size: 4em;
   color: #275f70;

@@ -10,6 +10,10 @@
   </div>
 </template>
 
+<style>
+  @import url('../src/assets/css/main.css');
+</style>
+
 <script>
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
