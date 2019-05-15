@@ -1,9 +1,9 @@
 <template>
-  <div class="columns is-centered">
-    <div class="upload-box" @dragover.prevent @drop="handleOnDrop">
+  <div v-if="!hasUploaded" class="columns multiline">
+    <div class="column is-12 upload-box" @dragover.prevent @drop="handleOnDrop">
       <h1>
         <i @click="$refs.upload.click()" class="fas fa-cloud-upload-alt"></i>
-        
+
         <input ref="upload" @change="handleFileName" class="file-input is-hidden" type="file">
       </h1>
       <span>{{ file_name }}</span>
@@ -11,16 +11,42 @@
       <div class="field has-text-centered">
         <br>
         <button @click="handleUpload" class="button is-success is-large">Subir</button>
-        <p>{{ message }}</p>
-        
       </div>
       <div v-if="isUploading" class="field">
-          <span v-if="uploadPercentage !== 100">Subiendo imagen... </span>
-          <progress class="progress is-small is-primary"  max="100" :value.prop="uploadPercentage">{{uploadPercentage}} %</progress>
+        <span v-if="uploadPercentage !== 100">Subiendo imagen...</span>
+        <progress
+          class="progress is-small is-primary"
+          max="100"
+          :value.prop="uploadPercentage"
+        >{{uploadPercentage}} %</progress>
       </div>
+    </div>
+  </div>
 
-      <div class="field">
-          <img :src="RESULT_IMG" alt="">
+  <div v-else>
+    <div class="columns">
+      <div class="column is-12">
+        <div class="field has-text-centered">
+          <p>{{ message }}</p>
+          <a target="_blank" :href="RESULT_IMG">
+            <img class="preview" :src="RESULT_IMG" alt>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-6 has-text-centered">
+        <div class="field">
+          <h3 class="custom-title">
+            Puedes copiar el siguiente código para insertar tu imagen en un foro</h3>
+          <input type="text" class="input has-text-centered" :value="'[IMG]' +RESULT_IMG+ '[/IMG]'">
+        </div>
+
+        <div class="field">
+          <button @click="reset" class="button is-danger">
+            <i class="fas fa-sync-alt"></i>&nbsp; Subir otra imagen
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -39,7 +65,8 @@ export default {
       message: "",
       uploadPercentage: 0,
       isUploading: false,
-      RESULT_IMG: ''
+      hasUploaded: false,
+      RESULT_IMG: ""
     };
   },
 
@@ -56,7 +83,8 @@ export default {
       //this.handleUpload();
     },
     handleUpload() {
-    this.uploadPercentage = 0;
+      this.hasUploaded = false;
+      this.uploadPercentage = 0;
       let formData = new FormData();
       formData.append("upload", this.file);
       parent = this;
@@ -66,7 +94,9 @@ export default {
         axios
           .post(`http://localhost/api/upload.php`, formData, {
             onUploadProgress: function(progressEvent) {
-              this.uploadPercentage = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
+              this.uploadPercentage = parseInt(
+                Math.round((progressEvent.loaded * 100) / progressEvent.total)
+              );
             }.bind(this)
           })
           .then(res => {
@@ -74,13 +104,20 @@ export default {
             this.message = res.data.RESPONSE;
             this.RESULT_IMG = res.data.UPLOADED_PATH;
             this.isUploading = false;
-
+            this.hasUploaded = true;
           })
           .catch(e => {
             console.log(e);
+            this.message = res.data.RESPONSE;
             this.isUploading = false;
           });
       }
+    },
+
+    reset() {
+      this.hasUploaded = false;
+      this.message = "";
+      this.RESULT_IMG = "";
     }
   }
 };
@@ -97,5 +134,19 @@ h1 {
   border: 3px dashed #cef3ff;
   width: 100%;
   text-align: center;
+}
+.preview {
+  max-height: 500px;
+  max-width: 600px;
+}
+
+h3.custom-title {
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.mtop-15 {
+  margin-top: 15px;
 }
 </style>
