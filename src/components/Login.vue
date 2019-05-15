@@ -14,8 +14,8 @@
           <input id="Password" v-model="password" type="password" class="input">
         </div>
 
-        <div class="field">
-          <button class="button is-light">Iniciar sesión</button>
+        <div class="field has-text-right">
+          <button class="button is-link">Iniciar sesión</button>
           <p>No tienes cuenta? <a href="#">Registrarse</a></p>
         </div>
 

@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div v-if="message.length > 0" class="notification">
+  <div v-if="message.length > 0" :class="{error : 'error'}" class="notification">
     <i class="fas fa-check"></i>&nbsp; {{ message }}
   </div>
 <div v-if="isUploading" :style="{width: uploadPercentage + '%'}" class="loading"></div>
@@ -10,19 +10,15 @@
         <i @click="$refs.upload.click()" class="fas fa-cloud-upload-alt"></i>
       </h1>
       <input ref="upload" @change="handleFileName" class="file-input is-hidden" type="file">
-      <span>{{ file_name }}</span>
-
+      <span v-if="hasUploaded">{{ file_name }}</span>
+      <span v-else>Subiendo imagen...</span>
       <div class="field has-text-centered">
         <br>
         <button :disabled="file_name==''" @click="handleUpload" class="button is-success is-large"><i class="fas fa-upload"></i>&nbsp; Subir archivos</button>
+        <p class="has-padding-15"><strong>Formatos permitidos:</strong> jpg/jpeg, png, gif </p>
       </div>
       <div v-if="isUploading" class="field">
         <span v-if="uploadPercentage > 0">Subiendo imagen...</span>
-        <!--<progress
-          class="progress is-small is-primary"
-          max="100"
-          :value.prop="uploadPercentage"
-        >{{uploadPercentage}} %</progress>-->
       </div>
     </div>
   </div>
@@ -185,5 +181,9 @@ h3.custom-title {
   z-index: 100;
   transition-duration: .3s;
   transition-delay: .3s;
+}
+
+.has-padding-15 {
+  padding: 15px;
 }
 </style>
