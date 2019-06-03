@@ -1,4 +1,4 @@
-# shurfoto
+# sfoto
 
 > A Vue.js project
 
